@@ -7,10 +7,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         goodsByGroups: {},
-        names: {
-            groups: {},
-            products: {}
-        },
+        names: {},
         currencies: {
             usd: 70
         },
@@ -20,37 +17,26 @@ const store = new Vuex.Store({
     mutations: {
         SET_GOODS(state, goods) {
             const parsedProducts = {}
-
             goods.forEach((item) => {
                 const product = {
-                    id: item.t,
-                    name: state.names.products[+item.t],
-                    groupId: item.g,
-                    groupName: state.names.groups[+item.g],
-                    price: item.c * state.currencies.usd,
-                    parts: item.p
+                    id: item.T,
+                    name: state.names[+item.G].B[+item.T].N,
+                    groupId: item.G,
+                    groupName: state.names[+item.G].G,
+                    price: item.C * state.currencies.usd,
+                    parts: item.P
                 }
-
-                parsedProducts[item.g] ? parsedProducts[item.g].push(product) : parsedProducts[item.g] = [product];
+                parsedProducts[item.G] ? parsedProducts[item.G].push(product) : parsedProducts[item.G] = [product];
             })
 
             state.goodsByGroups = parsedProducts
         },
 
-        SET_GROUPS_NAMES(state, groupsNames) {
-            groupsNames.forEach((item) => {
-                state.names.groups[item.id] = item.name
-            })
-        },
-
-        SET_PRODUCT_NAMES(state, productsNames) {
-            productsNames.forEach((item) => {
-                state.names.products[item.id] = item.name
-            })
+        SET_NAMES(state, names) {
+            this.state.names = names;
         },
 
         SET_IN_CART: (state, productData) => {
-
             console.log(productData)
             // state.cart.map((item) => {
             //
@@ -65,23 +51,25 @@ const store = new Vuex.Store({
 
         DEL_FROM_CART(state, index) {
             state.cart.splice(index, 1)
-        }
+        },
 
+        SET_USD(state, value) {
+            state.currencies.usd = value
+        }
     },
 
     actions: {
         GET_GOODS({commit}) {
             return fetch('data.json')
                 .then(response => response.json())
-                .then(response => commit('SET_GOODS', response.goods))
+                .then(response => commit('SET_GOODS', response.Value.Goods))
         },
 
         GET_NAMES({commit}) {
             return fetch('names.json')
                 .then(response => response.json())
                 .then((response) => {
-                    commit('SET_GROUPS_NAMES', response.groups);
-                    commit('SET_PRODUCT_NAMES', response.products);
+                    commit('SET_NAMES', response);
                 })
         },
 
@@ -91,6 +79,10 @@ const store = new Vuex.Store({
 
         REMOVE_FROM_CARD({commit}, index) {
             commit('DEL_FROM_CART', index)
+        },
+
+        UPDATE_USD({commit}, index) {
+            commit('SET_USD', index)
         }
     },
 
@@ -101,6 +93,10 @@ const store = new Vuex.Store({
 
         CART(state) {
             return state.cart
+        },
+
+        CURRENCIES(state) {
+            return state.currencies
         }
     }
 })

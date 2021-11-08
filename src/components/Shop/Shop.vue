@@ -1,6 +1,6 @@
 <template>
   <div class="py-5">
-    <Exchange/>
+    <Exchange :currencies="CURRENCIES"/>
 
     <Group
         v-for="(item, index) in GOODS_BY_GROUPS"
@@ -30,12 +30,11 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['CART', 'GOODS_BY_GROUPS'])
+    ...mapGetters(['CART', 'GOODS_BY_GROUPS', 'CURRENCIES'])
   },
 
   methods: {
     ...mapActions(['GET_NAMES', 'GET_GOODS']),
-
   },
 
   mounted() {
